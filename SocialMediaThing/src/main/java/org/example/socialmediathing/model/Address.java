@@ -24,13 +24,16 @@ public class Address {
 
     // Constructors, getters, and setters
 
-
     public void setId(Long id) {
         this.id = id;
     }
 
     public void setStreet(String street) {
         this.street = street;
+    }
+
+    public String getStreet() {
+        return this.street;
     }
 
     public void setCity(String city) {
