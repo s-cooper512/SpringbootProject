@@ -36,7 +36,12 @@ public class PostService {
 
         existingPost.setTitle(post.getTitle());
         existingPost.setContent(post.getContent());
-        // Set other fields
+        existingPost.setLikes(post.getLikes());
+        existingPost.setMediaUrl(post.getMediaUrl());
+        existingPost.setTimestamp(post.getTimestamp());
+        existingPost.setUser(post.getUser());
+        existingPost.setComments(post.getComments());
+        existingPost.setTags(post.getTags());
 
         return postRepository.save(existingPost);
     }

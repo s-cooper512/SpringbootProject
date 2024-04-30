@@ -38,7 +38,10 @@ public class CommentService {
                 .orElseThrow(Exception::new);
 
         comment.setText(commentDetails.getText());
-        // Update other fields as needed
+        comment.setTimestamp(commentDetails.getTimestamp());
+        comment.setLikes(commentDetails.getLikes());
+        comment.setCommenterUsername(commentDetails.getCommenterUsername());
+        comment.setPost(commentDetails.getPost());
 
         return commentRepository.save(comment);
     }

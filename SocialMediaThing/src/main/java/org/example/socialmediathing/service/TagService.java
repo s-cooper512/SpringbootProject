@@ -38,7 +38,8 @@ public class TagService {
                 .orElseThrow(Exception::new);
 
         tag.setName(tagDetails.getName());
-        // Update other fields as needed
+        tag.setDescription(tag.getDescription());
+        tag.setPosts(tag.getPosts());
 
         return tagRepository.save(tag);
     }

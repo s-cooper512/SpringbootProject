@@ -40,16 +40,32 @@ public class Address {
         this.city = city;
     }
 
+    public String getCity() {
+        return this.city;
+    }
+
     public void setState(String state) {
         this.state = state;
+    }
+
+    public String getState() {
+        return this.state;
     }
 
     public void setZipCode(String zipCode) {
         this.zipCode = zipCode;
     }
 
+    public String getZipCode() {
+        return this.zipCode;
+    }
+
     public void setCountry(String country) {
         this.country = country;
+    }
+
+    public String getCountry() {
+        return this.country;
     }
 }
 

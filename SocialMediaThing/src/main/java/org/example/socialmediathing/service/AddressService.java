@@ -38,7 +38,10 @@ public class AddressService {
                 .orElseThrow(Exception::new);
 
         address.setStreet(addressDetails.getStreet());
-        // Update other fields as needed
+        address.setCity(addressDetails.getCity());
+        address.setStreet(addressDetails.getState());
+        address.setZipCode(addressDetails.getZipCode());
+        address.setCountry(addressDetails.getCountry());
 
         return addressRepository.save(address);
     }
