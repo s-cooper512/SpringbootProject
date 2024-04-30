@@ -22,10 +22,27 @@ public class Address {
 
     private String country;
 
+    public Address(long id, String street, String city, String state, String zipCode, String country) {
+        this.setId(id);
+        this.setStreet(street);
+        this.setCity(city);
+        this.setState(state);
+        this.setZipCode(zipCode);
+        this.setCountry(country);
+    }
+
+    public Address() {
+
+    }
+
     // Constructors, getters, and setters
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getID () {
+        return this.id;
     }
 
     public void setStreet(String street) {

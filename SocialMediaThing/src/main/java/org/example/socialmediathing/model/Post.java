@@ -35,6 +35,14 @@ public class Post {
     @ManyToMany
     private List<Tag> tags;
 
+    public Post(long postId, String updatedTitle, String updatedContent, String updatedUrl, int likes) {
+        this.setId(postId);
+        this.setTitle(updatedTitle);
+        this.setContent(updatedContent);
+        this.setMediaUrl(updatedUrl);
+        this.setLikes(likes);
+    }
+
     // Constructors, getters, and setters
 
     public Long getId() {

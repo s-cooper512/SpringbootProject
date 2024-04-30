@@ -25,6 +25,18 @@ public class Comment {
     @ManyToOne
     private Post post;
 
+    public Comment(long commentId, String thisIsAComment, Date date, int likes, String username) {
+        this.setId(commentId);
+        this.setText(thisIsAComment);
+        this.setTimestamp(date);
+        this.setLikes(likes);
+        this.setCommenterUsername(username);
+    }
+
+    public Comment() {
+
+    }
+
     // Constructors, getters, and setters
 
     public Long getId() {
