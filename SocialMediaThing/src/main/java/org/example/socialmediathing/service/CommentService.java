@@ -26,10 +26,7 @@ public class CommentService {
         return commentRepository.save(comment);
     }
 
-    public void deleteComment(Long commentId) throws Exception {
-        if (!commentRepository.existsById(commentId)) {
-            throw new Exception();
-        }
+    public void deleteComment(Long commentId) {
         commentRepository.deleteById(commentId);
     }
 

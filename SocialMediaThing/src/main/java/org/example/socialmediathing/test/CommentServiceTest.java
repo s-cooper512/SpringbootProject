@@ -3,38 +3,37 @@ package org.example.socialmediathing.test;
 import org.example.socialmediathing.model.Comment;
 import org.example.socialmediathing.repository.ICommentRepository;
 import org.example.socialmediathing.service.CommentService;
+import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
-import org.testng.annotations.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
-import static org.mockito.Mockito.when;
-import static org.testng.AssertJUnit.assertEquals;
-import static org.testng.AssertJUnit.assertNotNull;
+import static java.util.Calendar.OCTOBER;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.*;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(SpringRunner.class)
+@SpringBootTest
 public class CommentServiceTest {
 
-    @Mock
-    private ICommentRepository commentRepository;
-
-    @InjectMocks
+    @Autowired
     private CommentService commentService;
 
-    @org.junit.Test
+    @MockBean
+    private ICommentRepository commentRepository;
+    final Comment TEST_COMMENT = new Comment(1L, "Comment", new Date(Calendar.DATE), 4, "username");
+
     @Test
-    public void testGetAllComments() {
+    public void testGetAllComments_returnsAllComments() {
         // Mock data
         List<Comment> comments = new ArrayList<>();
-        comments.add(new Comment(1L, "This is a comment", new Date(), 0, "JohnDoe"));
-        comments.add(new Comment(2L, "This is another comment", new Date(), 2, "JaneDoe"));
+        comments.add(new Comment(1L,  "Comment 1", new Date(Calendar.DATE), 4, "username 1"));
+        comments.add(new Comment(2L,  "Comment 2", new Date(Calendar.DATE), 12, "username 2"));
 
         // Stub the repository method to return the mock data
         when(commentRepository.findAll()).thenReturn(comments);
@@ -48,76 +47,113 @@ public class CommentServiceTest {
         assertEquals(comments.get(1).getText(), result.get(1).getText());
     }
 
-    @org.junit.Test
     @Test
-    public void testGetCommentById() throws Exception {
-        // Mock data
-        long commentId = 1L;
-        Comment comment = new Comment(commentId, "This is a comment", new Date(), 0, "JohnDoe");
+    public void testGetAllComments_fails() {
+        // Stub the repository method to throw an exception when called
+        given(commentRepository.findAll()).willThrow(new RuntimeException("Failed to retrieve comments"));
 
-        // Stubbing repository method
-        when(commentRepository.findById(commentId)).thenReturn(Optional.of(comment));
-
-        // Call service method
-        Comment result = commentService.getCommentById(commentId);
-
-        // Assertions
-        assertNotNull(result);
-        assertEquals(Optional.of(commentId), Optional.of(result.getId()));
-        assertEquals(comment.getText(), result.getText());
+        // Verify that calling getAllComments method throws an exception
+        assertThrows(RuntimeException.class, () -> commentService.getAllComments());
     }
 
-    @org.junit.Test
+
     @Test
-    public void testCreateComment() {
-        // Mock data
-        Comment comment = new Comment(1L, "This is a comment", new Date(), 0, "JohnDoe");
+    public void testGetCommentByID_validID_returnsComment() throws Exception {
+        given(commentRepository.findById(TEST_COMMENT.getId())).willReturn(Optional.of(TEST_COMMENT));
 
-        // Stubbing repository method
-        when(commentRepository.save(Mockito.any(Comment.class))).thenReturn(comment);
-
-        // Call service method
-        Comment result = commentService.createComment(comment);
-
-        // Assertions
-        assertNotNull(result);
-        assertEquals(comment.getText(), result.getText());
+        Comment example = commentService.getCommentById(TEST_COMMENT.getId());
+        assertNotNull(example);
+        assertEquals(TEST_COMMENT.getId(), example.getId());
     }
 
-    @org.junit.Test
     @Test
-    public void testDeleteComment() throws Exception {
-        // Mock data
-        long commentId = 1L;
+    public void testGetCommentByID_invalidID_fails() {
+        given(commentRepository.findById(TEST_COMMENT.getId())).willReturn(Optional.empty());
 
-        // Stubbing repository method
-        Mockito.doNothing().when(commentRepository).deleteById(commentId);
-
-        // Call service method
-        commentService.deleteComment(commentId);
-
-        // Verify that deleteById method was called
-        Mockito.verify(commentRepository, Mockito.times(1)).deleteById(commentId);
+        assertThrows(Exception.class, () -> commentService.getCommentById(TEST_COMMENT.getId()));
     }
 
-    @org.junit.Test
     @Test
-    public void testUpdateComment() throws Exception {
+    public void testAddComment_Successful() {
+        // Stub the repository method to return the saved comment
+        given(commentRepository.save(TEST_COMMENT)).willReturn(TEST_COMMENT);
+
+        // Call the service method
+        Comment example = commentService.createComment(TEST_COMMENT);
+
+        // Verify that the comment was saved successfully
+        assertNotNull(example);
+        assertEquals(TEST_COMMENT.getId(), example.getId());
+        assertEquals(TEST_COMMENT.getText(), example.getText());
+        assertEquals(TEST_COMMENT.getTimestamp(), example.getTimestamp());
+        assertEquals(TEST_COMMENT.getCommenterUsername(), example.getCommenterUsername());
+        assertEquals(TEST_COMMENT.getLikes(), example.getLikes());
+    }
+
+    @Test
+    public void testAddComment_Unsuccessful() {
+        // Stub the repository method to throw an exception when called
+        given(commentRepository.save(TEST_COMMENT)).willThrow(new RuntimeException("Failed to add comment"));
+
+        // Call the service method and verify that it throws an exception
+        assertThrows(RuntimeException.class, () -> commentService.createComment(TEST_COMMENT));
+    }
+
+    @Test
+    public void testDeleteComment_Successful() {
+        // Call the service method
+        assertDoesNotThrow(() -> commentService.deleteComment(TEST_COMMENT.getId()));
+
+        // Verify that the delete method of the repository was called with the correct commentId
+        verify(commentRepository, times(1)).deleteById(TEST_COMMENT.getId());
+    }
+
+    @Test
+    public void testDeleteComment_Unsuccessful() {
+        // Stub the repository method to throw an exception when called
+        doThrow(new RuntimeException("Failed to delete comment")).when(commentRepository).deleteById(TEST_COMMENT.getId());
+
+        // Call the service method and verify that it throws an exception
+        assertThrows(RuntimeException.class, () -> commentService.deleteComment(TEST_COMMENT.getId()));
+    }
+
+    @Test
+    public void testUpdateComment_Successful() throws Exception {
         // Mock data
-        long commentId = 1L;
-        Comment existingComment = new Comment(commentId, "This is a comment", new Date(), 0, "JohnDoe");
-        Comment updatedComment = new Comment(commentId, "Updated comment", new Date(), 0, "JohnDoe");
+        Comment updatedComment = new Comment(TEST_COMMENT.getId(), "Updated Comment", new Date(Calendar.DATE), 1000, "Updated Username");
 
-        // Stubbing repository method
-        when(commentRepository.findById(commentId)).thenReturn(Optional.of(existingComment));
-        when(commentRepository.save(Mockito.any(Comment.class))).thenReturn(updatedComment);
+        // Stub the repository method to return the existing comment
+        when(commentRepository.findById(TEST_COMMENT.getId())).thenReturn(Optional.of(TEST_COMMENT));
 
-        // Call service method
-        Comment result = commentService.updateComment(commentId, updatedComment);
+        // Stub the repository method to return the updated comment
+        when(commentRepository.save(any(Comment.class))).thenReturn(updatedComment);
 
-        // Assertions
+        // Call the service method
+        Comment result = commentService.updateComment(TEST_COMMENT.getId(), updatedComment);
+
+        // Verify the result
         assertNotNull(result);
+        assertEquals(updatedComment.getId(), result.getId());
         assertEquals(updatedComment.getText(), result.getText());
+        assertEquals(updatedComment.getTimestamp(), result.getTimestamp());
+        assertEquals(updatedComment.getCommenterUsername(), result.getCommenterUsername());
+        assertEquals(updatedComment.getLikes(), result.getLikes());
     }
+
+    @Test
+    public void testUpdateComment_Unsuccessful_CommentNotFound() {
+        // Mock data
+        Comment updatedComment = new Comment(TEST_COMMENT.getId(), "Updated Comment", new Date(Calendar.DATE), 1000, "Updated Username");
+
+        // Stub the repository method to return an empty optional
+        when(commentRepository.findById(TEST_COMMENT.getId())).thenReturn(Optional.empty());
+
+        // Call the service method and verify that it throws an exception
+        assertThrows(Exception.class, () -> commentService.updateComment(TEST_COMMENT.getId(), updatedComment));
+
+        // Verify that the repository method save was not called
+        verify(commentRepository, never()).save(any(Comment.class));
+    }
+
 }
 

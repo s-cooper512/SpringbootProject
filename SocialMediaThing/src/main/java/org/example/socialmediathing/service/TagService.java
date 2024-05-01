@@ -26,10 +26,7 @@ public class TagService {
         return tagRepository.save(tag);
     }
 
-    public void deleteTag(Long tagId) throws Exception {
-        if (!tagRepository.existsById(tagId)) {
-            throw new Exception();
-        }
+    public void deleteTag(Long tagId) {
         tagRepository.deleteById(tagId);
     }
 

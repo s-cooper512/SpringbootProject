@@ -20,8 +20,14 @@ public class Tag {
     @ManyToMany(mappedBy = "tags")
     private List<Post> posts;
 
-    // Constructors, getters, and setters
 
+
+    // Constructors, getters, and setters
+    public Tag(long id, String name, String description) {
+        this.setId(id);
+        this.setName(name);
+        this.setDescription(description);
+    }
 
     public Long getId() {
         return id;

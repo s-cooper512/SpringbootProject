@@ -41,7 +41,7 @@ public class Address {
         this.id = id;
     }
 
-    public Long getID () {
+    public Long getId () {
         return this.id;
     }
 

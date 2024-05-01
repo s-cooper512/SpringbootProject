@@ -26,10 +26,7 @@ public class AddressService {
         return addressRepository.save(address);
     }
 
-    public void deleteAddress(Long addressId) throws Exception {
-        if (!addressRepository.existsById(addressId)) {
-            throw new Exception();
-        }
+    public void deleteAddress(Long addressId) {
         addressRepository.deleteById(addressId);
     }
 

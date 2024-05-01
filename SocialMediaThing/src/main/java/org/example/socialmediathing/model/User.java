@@ -35,7 +35,18 @@ public class User {
     @OneToOne(cascade = CascadeType.ALL)
     private Address address;
 
+
+
     // Constructors, getters, and setters
+    public User(long id, String username, String email, String password, Date date, String url, String bio) {
+        this.setId(id);
+        this.setUsername(username);
+        this.setEmail(email);
+        this.setPassword(password);
+        this.setRegistrationDate(date);
+        this.setProfilePictureUrl(url);
+        this.setBio(bio);
+    }
 
 
     public Long getId() {
