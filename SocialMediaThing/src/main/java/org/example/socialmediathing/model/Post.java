@@ -43,6 +43,10 @@ public class Post {
         this.setLikes(likes);
     }
 
+    public Post() {
+
+    }
+
     // Constructors, getters, and setters
 
     public Long getId() {

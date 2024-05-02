@@ -48,6 +48,10 @@ public class User {
         this.setBio(bio);
     }
 
+    public User() {
+
+    }
+
 
     public Long getId() {
         return id;

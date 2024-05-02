@@ -29,6 +29,10 @@ public class Tag {
         this.setDescription(description);
     }
 
+    public Tag() {
+
+    }
+
     public Long getId() {
         return id;
     }
