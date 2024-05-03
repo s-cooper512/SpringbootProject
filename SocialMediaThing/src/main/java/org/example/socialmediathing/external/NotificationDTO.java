@@ -1,33 +1,21 @@
-package org.example.notificationstuff.model;
-
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+package org.example.socialmediathing.external;
 
 import java.util.Date;
 
-@Entity
-public class Notification {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class NotificationDTO {
 
     private Long postOwnerId; // ID of the user who owns the post
     private String commenterUsername; // Username of the user who commented
     private Long postId; // ID of the post
-    private Date timestamp; // Timestamp of when the notification was created
 
-    // Constructors, getters, and setters
-
-
-    public Long getId() {
-        return id;
+    //private Date timestamp;
+    public NotificationDTO() {
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public NotificationDTO(Long userId, String username, Long postId) {
+        this.setPostOwnerId(userId);
+        this.setPostId(postId);
+        this.setCommenterUsername(username);
     }
 
     public Long getPostOwnerId() {
@@ -52,13 +40,5 @@ public class Notification {
 
     public void setPostId(Long postId) {
         this.postId = postId;
-    }
-
-    public Date getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(Date timestamp) {
-        this.timestamp = timestamp;
     }
 }

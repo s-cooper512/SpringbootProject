@@ -1,5 +1,7 @@
 package org.example.socialmediathing.controller;
 
+import org.example.socialmediathing.external.NotificationDTO;
+import org.example.socialmediathing.external.NotificationService;
 import org.example.socialmediathing.model.Comment;
 import org.example.socialmediathing.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +18,9 @@ public class CommentController {
     @Autowired
     private CommentService commentService;
 
+    @Autowired
+    private NotificationService notificationService;
+
     @GetMapping
     public ResponseEntity<List<Comment>> getAllComments() {
         List<Comment> comments = commentService.getAllComments();
@@ -31,6 +36,8 @@ public class CommentController {
     @PostMapping
     public ResponseEntity<Comment> createComment(@RequestBody Comment comment) {
         Comment createdComment = commentService.createComment(comment);
+        NotificationDTO dto = new NotificationDTO(comment.getPost().getUser().getId(), comment.getCommenterUsername(), comment.getPost().getId());
+        notificationService.addNotification(dto);
         return new ResponseEntity<>(createdComment, HttpStatus.CREATED);
     }
 

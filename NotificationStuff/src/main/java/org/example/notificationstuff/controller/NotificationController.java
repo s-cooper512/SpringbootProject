@@ -7,6 +7,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -18,8 +22,15 @@ public class NotificationController {
 
     @PostMapping
     public ResponseEntity<Notification> addNotification(@RequestBody Notification notification) {
+        notification.setTimestamp(new Date(Calendar.DATE));
         Notification createdNotification = notificationService.addNotification(notification);
         return new ResponseEntity<>(createdNotification, HttpStatus.CREATED);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Notification>> getAllNotifications() {
+        List<Notification> notifications = notificationService.getAllNotifications();
+        return new ResponseEntity<>(notifications, HttpStatus.OK);
     }
 
     @GetMapping("/{userId}")
